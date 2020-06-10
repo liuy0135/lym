@@ -31,7 +31,7 @@ generate.df=function(model,type,p,n1=50,n2=50){
       x=(rbind(x1,x2,x3,x4))
     }
     if (type==2){
-      df=30
+      df=25
       x1=rmvt(n1,sig1,df);x2=rmvt(n1,sig2,df)
       x3=rmvt(n2,sig2,df);x4=rmvt(n2,sig2,df)
       x=(rbind(x1,x2,x3,x4))
@@ -70,7 +70,7 @@ generate.df=function(model,type,p,n1=50,n2=50){
       x=(rbind(x1,x2,x3,x4))
     }
     if (type==2){
-      df=30
+      df=25
       x1=rmvt(n1,sig1,df);x2=rmvt(n1,sig1,df)
       x3=rmvt(n2,sig2,df);x4=rmvt(n2,sig2,df)
       x=(rbind(x1,x2,x3,x4))
@@ -89,7 +89,7 @@ generate.df=function(model,type,p,n1=50,n2=50){
       x=(rbind(x1,x2,x3))
     }
     if (type==2){
-      df=30
+      df=25
       x1=rmvt(60,sig1,df);x2=rmvt(60,sig2,df)
       x3=rmvt(n3,diag(p),df)
       x=(rbind(x1,x2,x3))
@@ -155,98 +155,19 @@ AAA1=function(x,KK){
 
 p=50;n=200;type=1;model1=1;P=diag(n)-rep(1,n)%*%t(rep(1,n))/n
 KK=Bchosen(n)
-asim=20
-###model 1
-km1=gmm1=skm1=rfm1=prop1=NULL
-ad=0;mu1=mu2=c(0,rep(0,p-1));M1=M2=NULL
-pos1=c(rep(1,50),rep(2,50),rep(2,50),rep(2,50))
-pos2=c(rep(2,50),rep(1,50),rep(1,50),rep(1,50)) 
-
-for (k in 1:asim){
-  set.seed(k)
-  x=generate.df(model1,type,p)
-  ###km method
-  temp1=kmeans(x,2)$cluster
-  km1_1=temp1-pos1
-  km1_2=temp1-pos2
-  km1[k]=1-max(length(which(km1_1==0)), length(which(km1_2==0)))/n
-  ###GMM
-  temp2=Mclust(x,2)$classification
-  gmm1_1=temp2-pos1
-  gmm1_2=temp2-pos2
-  gmm1[k]=1-max(length(which(gmm1_1==0)), length(which(gmm1_2==0)))/n
-  ####SKM
-  temp3=RSKC(x,2,0.1)$labels
-  skm1_1=temp3-pos1
-  skm1_2=temp3-pos2
-  skm1[k]=1-max(length(which(skm1_1==0)), length(which(skm1_2==0)))/n
-  ###RFM
-  y=x^2
-  S0=y%*%t(y)/p
-  temp4=kmeans(svd(S0)$u[,1],2)$cluster
-  rfm1_1=temp4-pos1
-  rfm1_2=temp4-pos2
-  rfm1[k]=1-max(length(which(rfm1_1==0)), length(which(rfm1_2==0)))/n
-  
-  ###
-  ind=AAA1(x,KK)
-  cr1=cr2=rep(0,p)
-  for (i in 1:p){
-    cr1[i]=ifelse(i%in%ind[i,1],1,0)
-    cr2[i]=ifelse(i%in%ind[i,1:2],1,0)
-  }
-  M1[k]=mean(cr1)
-  M2[k]=mean(cr2)
-     newx1=x*matrix(x[,ind[,1]],n,p)#+x*matrix(x[,ind[,2]],n,p)
-       #S=P%*%newx1%*%t(newx1)%*%P/n
-       S=newx1%*%t(newx1)/n
-       temp05=kmeans(svd(S)$u[,1],2)$cluster
-       prop1_1=temp05-pos1
-       prop1_2=temp05-pos2
-       prop1[k]=1-max(length(which(prop1_1==0)), length(which(prop1_2==0)))/n
-       
-       print(k)
-}
-
-
 
 
 model2=2
 
-asim=20
 ###model 2
 km1=gmm1=skm1=rfm1=prop1=NULL
 ad=0;mu1=mu2=c(0,rep(0,p-1));M1=M2=NULL
 pos1=c(rep(1,50),rep(2,50),rep(2,50),rep(2,50))
 pos2=c(rep(2,50),rep(1,50),rep(1,50),rep(1,50)) 
 
-for (k in 1:asim){
-  set.seed(k)
+
   x=generate.df(model2,type,p)
-  ###km method
-  temp1=kmeans(x,2)$cluster
-  km1_1=temp1-pos1
-  km1_2=temp1-pos2
-  km1[k]=1-max(length(which(km1_1==0)), length(which(km1_2==0)))/n
-  ###GMM
-  temp2=Mclust(x,2)$classification
-  gmm1_1=temp2-pos1
-  gmm1_2=temp2-pos2
-  gmm1[k]=1-max(length(which(gmm1_1==0)), length(which(gmm1_2==0)))/n
-  ####SKM
-  temp3=RSKC(x,2,0.1)$labels
-  skm1_1=temp3-pos1
-  skm1_2=temp3-pos2
-  skm1[k]=1-max(length(which(skm1_1==0)), length(which(skm1_2==0)))/n
-  ###RFM
-  y=x^2
-  S0=y%*%t(y)/p
-  temp4=kmeans(svd(S0)$u[,1],2)$cluster
-  rfm1_1=temp4-pos1
-  rfm1_2=temp4-pos2
-  rfm1[k]=1-max(length(which(rfm1_1==0)), length(which(rfm1_2==0)))/n
   
-  ###
   ind=AAA1(x,KK)
   cr1=cr2=rep(0,p)
   cr1[1]=cr2[1]=ifelse((2)%in%ind[1,],1,0)
@@ -256,8 +177,8 @@ for (k in 1:asim){
     cr2[i]=ifelse((i+1)%in%ind[i,1:2]|(i-1)%in%ind[i,1:2],1,0)
   }
 
-  M1[k]=mean(cr1)
-  M2[k]=mean(cr2)
+mean(cr1)
+ mean(cr2)
        
        
        
@@ -267,11 +188,9 @@ for (k in 1:asim){
        temp05=kmeans(svd(S)$u[,1],2)$cluster
        prop1_1=temp05-pos1
        prop1_2=temp05-pos2
-       prop1[k]=1-max(length(which(prop1_1==0)), length(which(prop1_2==0)))/n
+      1-max(length(which(prop1_1==0)), length(which(prop1_2==0)))/n
        
-       print(k)
-}
-
+  
 
 
 
