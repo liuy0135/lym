@@ -151,14 +151,11 @@ AAA1=function(x,KK){
 
 
 
-
+####conduct a test
 
 p=50;n=200;type=1;model1=1;P=diag(n)-rep(1,n)%*%t(rep(1,n))/n
 KK=Bchosen(n)
-
-
 model2=2
-
 ###model 2
 km1=gmm1=skm1=rfm1=prop1=NULL
 ad=0;mu1=mu2=c(0,rep(0,p-1));M1=M2=NULL
@@ -179,10 +176,9 @@ pos2=c(rep(2,50),rep(1,50),rep(1,50),rep(1,50))
 
 mean(cr1)
  mean(cr2)
-       
-       
-       
-       newx1=x*matrix(x[,ind[,1]],n,p)+x*matrix(x[,ind[,2]],n,p)
+
+         ###clustering
+         newx1=x*matrix(x[,ind[,1]],n,p)+x*matrix(x[,ind[,2]],n,p)
        #S=P%*%newx1%*%t(newx1)%*%P/n
        S=newx1%*%t(newx1)/n
        temp05=kmeans(svd(S)$u[,1],2)$cluster
